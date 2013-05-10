@@ -22,7 +22,6 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_it.h"
 #include "main.h"
 
 /** @addtogroup STM32F4_Discovery_Peripheral_Examples
@@ -137,6 +136,9 @@ void SysTick_Handler(void) {
 /*  file (startup_stm32f4xx.s).                                               */
 /******************************************************************************/
 
+void UART4_IRQHandler(void) {
+	DispatchIRQ(UART4_IRQ);
+}
 /**
  * @brief  This function handles PPP interrupt request.
  * @param  None

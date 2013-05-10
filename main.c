@@ -33,10 +33,12 @@ static volatile uint32_t WriteReadStatus = 0;
 static uint32_t Index = 0;
 
 /* Private function prototypes -----------------------------------------------*/
-static void TimingDelay_Decrement(void);
-static void Fill_Buffer(uint16_t *pBuffer, uint16_t BufferLenght, uint32_t Offset);
-static uint32_t testNOR(uint32_t startAddress, uint32_t size, uint16_t bufferSize);
-static uint32_t testSRAM(uint32_t startAddress, uint32_t size, uint16_t bufferSize);
+static void Fill_Buffer(uint16_t *pBuffer, uint16_t BufferLenght,
+		uint32_t Offset);
+static uint32_t testNOR(uint32_t startAddress, uint32_t size,
+		uint16_t bufferSize);
+static uint32_t testSRAM(uint32_t startAddress, uint32_t size,
+		uint16_t bufferSize);
 static void ProcessSerialInput(char* buffer, uint16_t size);
 
 /**
@@ -106,7 +108,6 @@ uint32_t testNOR(uint32_t startAddress, uint32_t size, uint16_t bufferSize) {
 	uint8_t endBlock = (startAddress + size) / NORFLASH_SECTOR_SIZE;
 	NORFLASH_Status status;
 	NORFLASH_Id chipId;
-
 
 	NORFLASH_Init();
 //	for (index = startBlock; index <= endBlock; index++) {
@@ -178,15 +179,6 @@ uint32_t testSRAM(uint32_t startAddress, uint32_t size, uint16_t bufferSize) {
 }
 
 /**
- * @brief  This function handles SysTick Handler.
- * @param  None
- * @retval None
- */
-void SysTick_Handler(void) {
-	TimingDelay_Decrement();
-}
-
-/**
  * @brief  Inserts a delay time.
  * @param  nTime: specifies the delay time length, in milliseconds.
  * @retval None
@@ -215,5 +207,20 @@ void ProcessSerialInput(char* buffer, uint16_t size) {
 		LCD5110_Set_XY(0, 0);
 		LCD5110_Write_String(buffer);
 		SerialClearInputBuffer();
+	}
+}
+
+/**
+ * Route IRQ to the implemented handler
+ *
+ * @param irq IRQ type
+ */
+void DispatchIRQ(IRQ_PPP_Type irq) {
+	switch (irq) {
+	case UART4_IRQ:
+		UART4_IRQHandler_impl();
+		break;
+	default:
+		break;
 	}
 }
