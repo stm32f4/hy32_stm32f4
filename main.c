@@ -14,6 +14,10 @@
 #include "5110.h"
 #include "serial.h"
 #include "ascii.h"
+#include "ds18b20.h"
+#include "hw_ds18b20.h"
+
+uint32_t SystemTicks = 0;
 
 /* Private typedef -----------------------------------------------------------*/
 GPIO_InitTypeDef GPIO_InitStructure;
@@ -27,6 +31,7 @@ NVIC_InitTypeDef NVIC_InitStructure;
 /* Private variables ---------------------------------------------------------*/
 static volatile uint32_t TimingDelay;
 static uint16_t blink;
+static uint32_t tempInterval = 0;
 
 static uint16_t TxBuffer[BUFFER_SIZE];
 static uint16_t RxBuffer[BUFFER_SIZE];
@@ -41,6 +46,7 @@ static uint32_t testNOR(uint32_t startAddress, uint32_t size,
 static uint32_t testSRAM(uint32_t startAddress, uint32_t size,
 		uint16_t bufferSize);
 static void ProcessSerialInput(char* buffer, uint16_t size);
+static void testDS18B20();
 
 /**
  * @brief  HY-STM32 board test
@@ -53,6 +59,7 @@ int main(void) {
 	if (SysTick_Config(SystemCoreClock / 1000))
 		while (1)
 			;
+	SystemTicks = 0;
 	NVIC_InitStructure.NVIC_IRQChannel = SysTick_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
@@ -79,8 +86,9 @@ int main(void) {
 	SerialSetCallBack((callBack) ProcessSerialInput);
 	SerialSendBytes("Hello\r\n", 7);
 
-	WriteReadStatus = testNOR(0x10000, 0x100, 0x100);
-	WriteReadStatus = testSRAM(0, 0x400000, 0x1000);
+	//WriteReadStatus = testNOR(0x10000, 0x100, 0x100);
+	//WriteReadStatus = testSRAM(0, 0x400000, 0x1000);
+	testDS18B20();
 
 	if (WriteReadStatus == 0) {
 		blink = 500; /* Ok */
@@ -97,6 +105,10 @@ int main(void) {
 		} else {
 			LCD5110_Set_XY(0, 5);
 			LCD5110_Write_String(" - - - - - - -");
+		}
+		if (++tempInterval == 120) {
+			testDS18B20();
+			tempInterval = 0;
 		}
 	}
 }
@@ -150,7 +162,7 @@ uint32_t testSRAM(uint32_t startAddress, uint32_t size, uint16_t bufferSize) {
 			LCD5110_Write_Dec32(loop, 7);
 
 			getHexFromLong(AddressLine + 5, loop, 8);
-			getDecimalFromShort(AddressLine + 16, check);
+			getDecimalFromShort(AddressLine + 16, check, 5);
 			SerialSendBytes(AddressLine, 24);
 		}
 		if ((uint16_t) loop != check) {
@@ -199,6 +211,7 @@ void TimingDelay_Decrement(void) {
 	if (TimingDelay > 0x00) {
 		TimingDelay--;
 	}
+	SystemTicks++;
 }
 
 void ProcessSerialInput(char* buffer, uint16_t size) {
@@ -224,4 +237,41 @@ void DispatchIRQ(IRQ_PPP_Type irq) {
 	default:
 		break;
 	}
+}
+
+void testDS18B20() {
+	static char text[13] = "Temp :   . \0 ";
+	tDS18B20Dev dev;
+	dev.ulPort = GPIOA;
+	dev.ulPin = GPIO_Pin_8;
+	dev.uBus = RCC_AHB1Periph_GPIOA;
+	uint8_t i;
+
+	DS18B20Init(&dev);
+
+	float temp = 0;
+
+	DS18B20Reset(&dev);
+	DS18B20ROMRead(&dev);
+
+	DS18B20Reset(&dev);
+	DS18B20ROMMatch(&dev);
+	DS18B20TempConvert(&dev);
+
+	DS18B20Reset(&dev);
+	DS18B20ROMMatch(&dev);
+	DS18B20TempRead(&dev, &temp);
+
+	uint16_t temp1 = (uint8_t) temp;
+	uint8_t temp2 = (uint8_t)((uint16_t)(temp * 10 + .5) - temp1 * 10);
+
+	getDecimalFromShort(text + 7, temp1, 2);
+	getDecimalFromShort(text + 10, temp2, 1);
+	LCD5110_Set_XY(0, 2);
+	LCD5110_Write_String(text);
+
+	text[11] = 0x0D;
+	text[12] = 0x0A;
+	SerialSendBytes(text, 13);
+	text[11] = 0x00;
 }
