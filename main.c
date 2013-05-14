@@ -16,6 +16,7 @@
 #include "ascii.h"
 #include "ds18b20.h"
 #include "hw_ds18b20.h"
+#include "DS1307.h"
 
 uint32_t SystemTicks = 0;
 
@@ -37,6 +38,9 @@ static uint16_t TxBuffer[BUFFER_SIZE];
 static uint16_t RxBuffer[BUFFER_SIZE];
 static volatile uint32_t WriteReadStatus = 0;
 static uint32_t Index = 0;
+static DATE_TYPE currDate;
+static char timeBuffer[9] = { 0 };
+static char tempBuffer[13] = "Temp :   . \0 ";
 
 /* Private function prototypes -----------------------------------------------*/
 static void Fill_Buffer(uint16_t *pBuffer, uint16_t BufferLenght,
@@ -46,8 +50,8 @@ static uint32_t testNOR(uint32_t startAddress, uint32_t size,
 static uint32_t testSRAM(uint32_t startAddress, uint32_t size,
 		uint16_t bufferSize);
 static void ProcessSerialInput(char* buffer, uint16_t size);
-static void testDS18B20();
-
+static void testDS18B20(char* tempBuffer);
+static void testDS1307();
 /**
  * @brief  HY-STM32 board test
  * @param  None
@@ -88,7 +92,8 @@ int main(void) {
 
 	//WriteReadStatus = testNOR(0x10000, 0x100, 0x100);
 	//WriteReadStatus = testSRAM(0, 0x400000, 0x1000);
-	testDS18B20();
+	//testDS18B20();
+	testDS1307();
 
 	if (WriteReadStatus == 0) {
 		blink = 500; /* Ok */
@@ -106,8 +111,30 @@ int main(void) {
 			LCD5110_Set_XY(0, 5);
 			LCD5110_Write_String(" - - - - - - -");
 		}
+		if (tempInterval & 0x1) {
+			DS1307ReadTime(&currDate);
+			DS1307GetTimeString(&currDate, timeBuffer);
+			LCD5110_Set_XY(0, 3);
+			LCD5110_Write_String(timeBuffer);
+			DS1307GetDateString(&currDate, timeBuffer);
+			LCD5110_Set_XY(0, 4);
+			LCD5110_Write_String(timeBuffer);
+		}
 		if (++tempInterval == 120) {
-			testDS18B20();
+			testDS18B20(tempBuffer);
+			LCD5110_Write_String(tempBuffer);
+
+			DS1307GetDateString(&currDate, timeBuffer);
+			SerialSendBytes(timeBuffer, 8);
+			SerialSendBytes(" ", 1);
+			DS1307GetTimeString(&currDate, timeBuffer);
+			SerialSendBytes(timeBuffer, 8);
+			SerialSendBytes(" ", 1);
+			tempBuffer[11] = 0x0D;
+			tempBuffer[12] = 0x0A;
+			SerialSendBytes(tempBuffer, 13);
+			tempBuffer[11] = 0x00;
+
 			tempInterval = 0;
 		}
 	}
@@ -239,8 +266,7 @@ void DispatchIRQ(IRQ_PPP_Type irq) {
 	}
 }
 
-void testDS18B20() {
-	static char text[13] = "Temp :   . \0 ";
+void testDS18B20(char* text) {
 	tDS18B20Dev dev;
 	dev.ulPort = GPIOA;
 	dev.ulPin = GPIO_Pin_8;
@@ -268,10 +294,10 @@ void testDS18B20() {
 	getDecimalFromShort(text + 7, temp1, 2);
 	getDecimalFromShort(text + 10, temp2, 1);
 	LCD5110_Set_XY(0, 2);
-	LCD5110_Write_String(text);
+}
 
-	text[11] = 0x0D;
-	text[12] = 0x0A;
-	SerialSendBytes(text, 13);
-	text[11] = 0x00;
+void testDS1307() {
+	DS1307Init();
+	//DS1307ReadTime();
+	//DS1307SetTime();
 }
