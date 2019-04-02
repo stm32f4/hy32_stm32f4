@@ -163,8 +163,8 @@
     <Component id="526" name="SYSCFG" path="" type="2"/>
   </Components>
   <Files>
-    <File name="cmsis_lib/source/stm32f4xx_gpio.c" path="cmsis_lib/source/stm32f4xx_gpio.c" type="1"/>
     <File name="cmsis_lib/include/stm32f4xx_flash.h" path="cmsis_lib/include/stm32f4xx_flash.h" type="1"/>
+    <File name="cmsis_lib/source/stm32f4xx_gpio.c" path="cmsis_lib/source/stm32f4xx_gpio.c" type="1"/>
     <File name="cmsis_lib/include/stm32f4xx_i2c.h" path="cmsis_lib/include/stm32f4xx_i2c.h" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_usart.c" path="cmsis_lib/source/stm32f4xx_usart.c" type="1"/>
     <File name="DS1307.c" path="../Library/DS1307/DS1307.c" type="1"/>
@@ -176,13 +176,13 @@
     <File name="cmsis_lib/source/stm32f4xx_fsmc.c" path="cmsis_lib/source/stm32f4xx_fsmc.c" type="1"/>
     <File name="cmsis_lib/include/stm32f4xx_usart.h" path="cmsis_lib/include/stm32f4xx_usart.h" type="1"/>
     <File name="CoX_Driver/DS18B20/hw_DS18B20.h" path="CoX_Driver/DS18B20/hw_DS18B20.h" type="1"/>
-    <File name="Library/ILI9325/ILI9325.c" path="../Library/ILI9325/ILI9325.c" type="1"/>
     <File name="Library/Memory/psram.h" path="../Library/PSRAM/psram.h" type="1"/>
-    <File name="cmsis_boot/startup" path="" type="2"/>
-    <File name="Library/LCD5110/5110 - Discovery.h" path="../Library/LCD5110/5110 - Discovery.h" type="1"/>
-    <File name="cmsis/core_cm4_simd.h" path="cmsis/core_cm4_simd.h" type="1"/>
+    <File name="Library/ILI9325/ILI9325.c" path="../Library/ILI9325/ILI9325.c" type="1"/>
     <File name="cmsis_boot/stm32f4xx.h" path="cmsis_boot/stm32f4xx.h" type="1"/>
+    <File name="cmsis/core_cm4_simd.h" path="cmsis/core_cm4_simd.h" type="1"/>
+    <File name="Library/LCD5110/5110 - Discovery.h" path="../Library/LCD5110/5110 - Discovery.h" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_flash.c" path="cmsis_lib/source/stm32f4xx_flash.c" type="1"/>
+    <File name="cmsis_boot/startup" path="" type="2"/>
     <File name="cmsis/core_cmFunc.h" path="cmsis/core_cmFunc.h" type="1"/>
     <File name="Library/ASCII" path="" type="2"/>
     <File name="cmsis/core_cm4.h" path="cmsis/core_cm4.h" type="1"/>
@@ -191,16 +191,16 @@
     <File name="CoX_Driver" path="" type="2"/>
     <File name="main.h" path="main.h" type="1"/>
     <File name="cmsis_lib/source/misc.c" path="cmsis_lib/source/misc.c" type="1"/>
-    <File name="Library/ILI9325" path="" type="2"/>
     <File name="Library/ASCII/ascii.h" path="../Library/ASCII/ascii.h" type="1"/>
+    <File name="Library/ILI9325" path="" type="2"/>
     <File name="cmsis_lib/include/stm32f4xx_tim.h" path="cmsis_lib/include/stm32f4xx_tim.h" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_i2c.c" path="cmsis_lib/source/stm32f4xx_i2c.c" type="1"/>
     <File name="cmsis_lib/source" path="" type="2"/>
     <File name="Library/Serial/serial.h" path="../Library/Serial/serial.h" type="1"/>
     <File name="DS1307.h" path="../Library/DS1307/DS1307.h" type="1"/>
     <File name="Library/Memory/norflash.h" path="../Library/NORFLASH/norflash.h" type="1"/>
-    <File name="Library/LCD5110/5110.c" path="../Library/LCD5110/5110.c" type="1"/>
     <File name="cmsis_boot/stm32f4xx_conf.h" path="cmsis_boot/stm32f4xx_conf.h" type="1"/>
+    <File name="Library/LCD5110/5110.c" path="../Library/LCD5110/5110.c" type="1"/>
     <File name="cmsis_boot/system_stm32f4xx.h" path="cmsis_boot/system_stm32f4xx.h" type="1"/>
     <File name="cmsis_lib/include/stm32f4xx_rcc.h" path="cmsis_lib/include/stm32f4xx_rcc.h" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_syscfg.c" path="cmsis_lib/source/stm32f4xx_syscfg.c" type="1"/>
@@ -213,9 +213,9 @@
     <File name="Library/Serial/serial.c" path="../Library/Serial/serial.c" type="1"/>
     <File name="Library/ILI9325/ILI9325.h" path="../Library/ILI9325/ILI9325.h" type="1"/>
     <File name="Library/Serial" path="" type="2"/>
-    <File name="cmsis_lib/source/stm32f4xx_exti.c" path="cmsis_lib/source/stm32f4xx_exti.c" type="1"/>
     <File name="CoX_Driver/DS18B20/DS18B20.c" path="CoX_Driver/DS18B20/DS18B20.c" type="1"/>
     <File name="cmsis_lib/include/stm32f4xx_exti.h" path="cmsis_lib/include/stm32f4xx_exti.h" type="1"/>
+    <File name="cmsis_lib/source/stm32f4xx_exti.c" path="cmsis_lib/source/stm32f4xx_exti.c" type="1"/>
     <File name="cmsis_boot/system_stm32f4xx.c" path="cmsis_boot/system_stm32f4xx.c" type="1"/>
     <File name="interrupt.c" path="interrupt.c" type="1"/>
     <File name="cmsis" path="" type="2"/>

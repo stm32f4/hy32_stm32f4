@@ -21,6 +21,7 @@ typedef struct {
 	uint8_t month1;
 	uint8_t year0;
 	uint8_t year1;
+	uint8_t weekDay;
 } DATE_TYPE;
 
 extern uint32_t SystemTicks;

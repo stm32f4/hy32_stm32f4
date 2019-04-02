@@ -59,8 +59,8 @@ static void testDS1307();
  */
 int main(void) {
 
-	/* Set Systick to 1 ms */
-	if (SysTick_Config(SystemCoreClock / 1000))
+	/* Set Systick to 1 µs */
+	if (SysTick_Config(SystemCoreClock / 1000000))
 		while (1)
 			;
 	SystemTicks = 0;
@@ -224,6 +224,17 @@ uint32_t testSRAM(uint32_t startAddress, uint32_t size, uint16_t bufferSize) {
  * @retval None
  */
 void Delay_ms(volatile uint32_t ntime) {
+	TimingDelay = ntime * 1000;
+	while (TimingDelay != 0)
+		;
+}
+
+/**
+ * @brief  Inserts a delay time.
+ * @param  nTime: specifies the delay time length, in microseconds.
+ * @retval None
+ */
+void Delay_us(volatile uint32_t ntime) {
 	TimingDelay = ntime;
 	while (TimingDelay != 0)
 		;
@@ -297,7 +308,37 @@ void testDS18B20(char* text) {
 }
 
 void testDS1307() {
+	uint8_t value;
 	DS1307Init();
-	//DS1307ReadTime();
-	//DS1307SetTime();
+	value = DS1307Read(0x00);
+	value = value & 0x80;
+	if(value) {
+		DS1307Write(0x00,0x30);
+	}
+	//setDate();
+}
+
+void setDate() {
+	DATE_TYPE curDate;
+	curDate.sec1 = 0;
+	curDate.sec0 = 0;
+
+	curDate.min1 = 1;
+	curDate.min0 = 4;
+
+	curDate.hour1 = 0;
+	curDate.hour0 = 3;
+
+	curDate.day1 = 3;
+	curDate.day0 = 0;
+
+	curDate.month1 = 1;
+	curDate.month0 = 2;
+
+	curDate.year1 = 1;
+	curDate.year0 = 3;
+
+	curDate.weekDay = 1;
+
+	DS1307SetTime(&curDate);
 }
