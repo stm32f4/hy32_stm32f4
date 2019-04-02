@@ -11,3 +11,7 @@ memory.ld
 *Target*
 *.config
 
+.objs/
+HY-STM32.ebp
+HY-STM32.depend
+HY-STM32.elay
